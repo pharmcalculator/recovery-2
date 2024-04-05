@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Recovery Calculation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .table-container {
+      margin: 0 20px;
+    }
+
+    table {
+      margin: 0 auto;
+      border-collapse: collapse
+      width: 600px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      font-size: 20px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 28px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .result-table {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .result-table th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .result-table td {
+      padding: 20px;
+    }
+
+    p {
+      font-size: 24px;
+    }
+  </style>
+  </style>
+  <script>
+    function calculateRecovery() {
+      var concentrations = ["High", "Medium", "Low"];
+      concentrations.forEach(function(concentration) {
+        var matrixValues = getPeakAreaValues(concentration + "MatrixPeakArea");
+        var waterValues = getPeakAreaValues(concentration + "WaterPeakArea");
+        var recovery = calculateRecoveryValues(matrixValues, waterValues);
+        var meanRecovery = calculateMean(recovery);
+        var standardDeviation = calculateStandardDeviation(recovery);
+        displayRecovery(concentration, meanRecovery);
+        displayStandardDeviation(concentration, standardDeviation);
+      });
+    }
+
+    function getPeakAreaValues(inputId) {
+      var peakAreaValues = [];
+      var inputs = document.getElementsByClassName(inputId);
+      for (var i = 0; i < inputs.length; i++) {
+        peakAreaValues.push(parseFloat(inputs[i].value));
+      }
+      return peakAreaValues;
+    }
+
+    function calculateRecoveryValues(matrixValues, waterValues) {
+      var recoveryValues = [];
+      for (var i = 0; i < matrixValues.length; i++) {
+        var recovery = (matrixValues[i] / waterValues[i]) * 100;
+        recoveryValues.push(recovery);
+      }
+      return recoveryValues;
+    }
+
+    function calculateMean(values) {
+      var sum = values.reduce(function(a, b) {
+        return a + b;
+      }, 0);
+      return sum / values.length;
+    }
+
+    function calculateStandardDeviation(values) {
+      var mean = calculateMean(values);
+      var squareDiffs = values.map(function(value) {
+        var diff = value - mean;
+        return diff * diff;
+      });
+      var avgSquareDiff = calculateMean(squareDiffs);
+      return Math.sqrt(avgSquareDiff);
+    }
+
+    function displayRecovery(concentration, meanRecovery) {
+      var recoveryElement = document.getElementById(concentration + "MeanRecovery");
+      recoveryElement.textContent = meanRecovery.toFixed(2) + "%";
+    }
+
+    function displayStandardDeviation(concentration, standardDeviation) {
+      var standardDeviationElement = document.getElementById(concentration + "StandardDeviation");
+      standardDeviationElement.textContent = standardDeviation.toFixed(2);
+    }
+  </script>
+</head>
+<body>
+  <h1>Recovery Calculation</h1>
+<!-- Added paragraph -->
+  <p>Recovery(%)=Peak area from samples spiked in biological matrix/Peak area from samples spiked in water x 100. 
+   
+<!-- Added paragraph -->
+  <p>Here you need to spike your drug into biological matrix (e.g., plasma, tissue, urine, feces) or water first, followed by extraction and injection.</p>
+<!-- Added paragraph -->
+  <p>Please use the original peak area for your calculation. DONOT use the calculated concentrations</p>
+  <div class="container">
+    <div class="table-container">
+      <h2>High Concentration</h2>
+      <table>
+        <tr>
+          <th>Sample</th>
+          <th>Peak Area in Biological Matrix</th>
+          <th>Peak Area in Water</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><input type="number" class="HighMatrixPeakArea"></td>
+          <td><input type="number" class="HighWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="number" class="HighMatrixPeakArea"></td>
+          <td><input type="number" class="HighWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input type="number" class="HighMatrixPeakArea"></td>
+          <td><input type="number" class="HighWaterPeakArea"></td>
+        </tr>
+      </table>
+    </div>
+    <div class="table-container">
+      <h2>Medium Concentration</h2>
+      <table>
+        <tr>
+          <th>Sample</th>
+          <th>Peak Area in Biological Matrix</th>
+          <th>Peak Area in Water</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><input type="number" class="MediumMatrixPeakArea"></td>
+          <td><input type="number" class="MediumWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="number" class="MediumMatrixPeakArea"></td>
+          <td><input type="number" class="MediumWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input type="number" class="MediumMatrixPeakArea"></td>
+          <td><input type="number" class="MediumWaterPeakArea"></td>
+        </tr>
+      </table>
+    </div>
+    <div class="table-container">
+      <h2>Low Concentration</h2>
+      <table>
+        <tr>
+          <th>Sample</th>
+          <th>Peak Area in Biological Matrix</th>
+          <th>Peak Area in Water</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><input type="number" class="LowMatrixPeakArea"></td>
+          <td><input type="number" class="LowWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="number" class="LowMatrixPeakArea"></td>
+          <td><input type="number" class="LowWaterPeakArea"></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input type="number" class="LowMatrixPeakArea"></td>
+          <td><input type="number" class="LowWaterPeakArea"></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <button onclick="calculateRecovery()">Calculate Recovery</button>
+  <div class="result-table">
+    <table>
+      <tr>
+        <th>Concentration</th>
+        <th>Mean Recovery (%)</th>
+        <th>Standard Deviation</th>
+      </tr>
+      <tr>
+        <td>High</td>
+        <td id="HighMeanRecovery"></td>
+        <td id="HighStandardDeviation"></td>
+      </tr>
+      <tr>
+        <td>Medium</td>
+        <td id="MediumMeanRecovery"></td>
+        <td id="MediumStandardDeviation"></td>
+      </tr>
+      <tr>
+        <td>Low</td>
+        <td id="LowMeanRecovery"></td>
+        <td id="LowStandardDeviation"></td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
